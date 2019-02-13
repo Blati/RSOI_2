@@ -1,65 +1,71 @@
 import unittest
 import requests
 
-class TestShowTimesService(unittest.TestCase):
+class TestMoviesService(unittest.TestCase):
     def setUp(self):
-        self.url = "http://127.0.0.1:5002/showtimes"
+        self.url = "http://127.0.0.1:5001/movies"
 
-    def test_all_showtimes_records(self):
-        """ Test /showtimes for all known showtimes"""
-        for date, expected in GOOD_RESPONSES.iteritems():
-            reply = requests.get("{}/{}".format(self.url, date))
+    def test_all_movie_records(self):
+        """ Test /movies/<movieid> for all known movies"""
+        for movieid, expected in GOOD_RESPONSES.iteritems():
+            reply = requests.get("{}/{}".format(self.url, movieid))
             actual_reply = reply.json()
 
-            self.assertEqual(len(actual_reply), len(expected),
-                             "Got {} showtimes but expected {}".format(
-                                 len(actual_reply), len(expected)
-                             ))
-
-            self.assertEqual(set(actual_reply), set(expected),
-                             "Got {} but expected {}".format(
-                                 actual_reply, expected))
+            self.assertEqual( set(actual_reply.items()), set(expected.items()))
 
     def test_not_found(self):
-        """ Test /showtimes/<date> for non-existent dates"""
-        future_date = 20490101
-        actual_reply = requests.get("{}/{}".format(self.url, future_date))
+        invalid_movie_id = "b18f"
+        actual_reply = requests.get("{}/{}".format(self.url, invalid_movie_id))
         self.assertEqual(actual_reply.status_code, 404,
-                         "Got {} but expected 404".format(
-                             actual_reply.status_code))
+                    "Got {} but expected 404".format(
+                        actual_reply.status_code))
+
+
+
+
+
 
 GOOD_RESPONSES = {
-  "08022017": [
-    "id1",
-    "id2",
-    "id7"
-  ],
-  "09022017": [
-    "id4",
-    "id5",
-    "id7",
-    "id2"
-  ],
-  "10022017": [
-    "id2",
-    "id3",
-    "id7",
-    "id6"
-  ],
-  "11022017": [
-    "id1",
-    "id7"
-  ],
-  "12022017": [
-    "id3",
-    "id2",
-    "id5"
-  ],
-  "13022017": [
-    "id3",
-    "id2",
-    "id5",
-    "id6",
-    "id7"
-  ]
+  "id1": {
+    "title": "Bohemian Rhapsody",
+    "rating": 8.2,
+    "director": "Bryan Singer",
+    "id": "id1"
+  },
+  "id2": {
+    "title": "Glass",
+    "rating": 7.0,
+    "director": "M. Night Shyamalan",
+    "id": "id2"
+  },
+  "id3": {
+    "title": "The House That Jack Built",
+    "rating": 7.0,
+    "director": "Lars von Trier",
+    "id": "id3"
+  },
+  "id4": {
+    "title": "Green Book",
+    "rating": 8.3,
+    "director": "Peter Farrelly",
+    "id": "id4"
+  },
+  "id5": {
+    "title": "T-34",
+    "rating": 6.2,
+    "director": "Aleksey Sidorov",
+    "id": "id5"
+  },
+  "id6": {
+    "title": "Spider-Man: Into the Spider-Verse",
+    "rating": 8.7,
+    "director": " Bob Persichetti",
+    "id": "id6"
+  },
+  "id7": {
+    "title": "The Grinch",
+    "rating": 6.3,
+    "director": "Yarrow Cheney",
+    "id": "id7"
+  }
 }
