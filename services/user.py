@@ -15,7 +15,7 @@ app.logger.addHandler(file_handler)
 with open("{}/database/users.json".format(root_dir()), "r") as f:
     users = json.load(f)
 	
-@app.route("/")
+@app.route("/", methods=['GET'])
 def hello():
     return nice_json({
         "uri": "/",
@@ -27,18 +27,18 @@ def hello():
         }
     })
 
-@app.route("/users")
+@app.route("/users", methods=['GET'])
 def users_list():
     return nice_json(users)
 
-@app.route("/users/<username>")
+@app.route("/users/<username>", methods=['GET'])
 def user_record(username):
     if username not in users:
         raise NotFound
 
     return nice_json(users[username])
 
-@app.route("/users/<username>/bookings")
+@app.route("/users/<username>/bookings", methods=['GET'])
 def user_bookings(username):
     """
     Gets booking information from the 'Bookings Service' for the user, and
@@ -78,7 +78,7 @@ def user_bookings(username):
     return nice_json(result)
 
 
-@app.route("/users/<username>/suggested")
+@app.route("/users/<username>/suggested", methods=['GET'])
 def user_suggested(username):
     """
     Returns movie suggestions. The algorithm returns a list of 3 top ranked

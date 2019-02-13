@@ -15,7 +15,7 @@ with open("{}/database/bookings.json".format(root_dir()), "r") as f:
     bookings = json.load(f)
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def hello():
     return nice_json({
         "uri": "/",
@@ -26,11 +26,11 @@ def hello():
     })
 
 
-@app.route("/bookings")
+@app.route("/bookings", methods=['GET'])
 def booking_list():
     return nice_json(bookings)
 
-@app.route("/bookings/<username>")
+@app.route("/bookings/<username>", methods=['GET'])
 def booking_record(username):
     if username not in bookings:
         raise NotFound

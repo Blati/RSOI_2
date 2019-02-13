@@ -14,7 +14,7 @@ app.logger.addHandler(file_handler)
 with open("{}/database/movies.json".format(root_dir()), "r") as f:
     movies = json.load(f)
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def hello():
     return nice_json({
         "uri": "/",
@@ -24,7 +24,7 @@ def hello():
         }
     })
 
-@app.route("/movies/<movieid>")
+@app.route("/movies/<movieid>", methods=['GET'])
 def movie_info(movieid):
     if movieid not in movies:
         raise NotFound
@@ -34,7 +34,7 @@ def movie_info(movieid):
 
     return nice_json(result)
 
-@app.route("/movies")
+@app.route("/movies", methods=['GET'])
 def movie_record():
     return nice_json(movies)
 

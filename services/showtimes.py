@@ -14,7 +14,7 @@ app.logger.addHandler(file_handler)
 with open("{}/database/showtimes.json".format(root_dir()), "r") as f:
     showtimes = json.load(f)
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def hello():
     return nice_json({
         "uri": "/",
@@ -24,11 +24,11 @@ def hello():
         }
     })
 
-@app.route("/showtimes")
+@app.route("/showtimes", methods=['GET'])
 def showtimes_list():
     return nice_json(showtimes)
 
-@app.route("/showtimes/<date>")
+@app.route("/showtimes/<date>", methods=['GET'])
 def showtimes_record(date):
     if date not in showtimes:
         raise NotFound
