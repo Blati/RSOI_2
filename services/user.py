@@ -3,14 +3,18 @@ from flask import Flask
 from werkzeug.exceptions import NotFound, ServiceUnavailable
 import json
 import requests
-
+from logging import FileHandler, WARNING
 
 app = Flask(__name__)
 
+file_handler = FileHandler('logs/user_log.log')
+file_handler.setLevel(WARNING)
+
+app.logger.addHandler(file_handler)
+
 with open("{}/database/users.json".format(root_dir()), "r") as f:
     users = json.load(f)
-
-
+	
 @app.route("/")
 def hello():
     return nice_json({

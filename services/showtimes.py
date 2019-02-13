@@ -2,9 +2,14 @@ from services import root_dir, nice_json
 from flask import Flask
 from werkzeug.exceptions import NotFound
 import json
-
+from logging import FileHandler, WARNING
 
 app = Flask(__name__)
+
+file_handler = FileHandler('logs/showtimes_log.log')
+file_handler.setLevel(WARNING)
+
+app.logger.addHandler(file_handler)
 
 with open("{}/database/showtimes.json".format(root_dir()), "r") as f:
     showtimes = json.load(f)
