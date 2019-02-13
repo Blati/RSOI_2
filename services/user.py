@@ -57,7 +57,7 @@ def user_bookings(username):
 
     # For each booking, get the rating and the movie title
     result = {}
-    for date, movies in users_bookings.iteritems():
+    for date, movies in users_bookings.items():
         result[date] = []
         for movieid in movies:
             try:
