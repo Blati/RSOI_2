@@ -23,7 +23,7 @@ class TestBookingService(unittest.TestCase):
 
     def test_not_found(self):
         """ Test /showtimes/<date> for non-existent users"""
-        invalid_user = "a"
+        invalid_user = "artem_karaulov"
         actual_reply = requests.get("{}/{}".format(self.url, invalid_user))
         self.assertEqual(actual_reply.status_code, 404,
                          "Got {} but expected 404".format(
