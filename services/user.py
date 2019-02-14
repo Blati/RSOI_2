@@ -24,7 +24,7 @@ def hello():
             "users": "/users",
             "user": "/users/<username>",
             "bookings": "/users/<username>/bookings",
-            "bookings": "/users/<username>/bookings/new",
+            "bookings_add": "/users/<username>/bookings/add",
             "suggested": "/users/<username>/suggested"
         }
     })
@@ -79,35 +79,37 @@ def user_bookings(username):
 
     return nice_json(result)
 
-@app.route("/users/<username>/bookings/new", methods=['GET', 'POST'])
-def user_bookings_new(username):
+@app.route("/users/<username>/bookings/add", defaults={'page': '08022019'}, methods=['GET', 'POST'])
+@app.route("/users/<username>/bookings/add/<page>")
+def user_bookings_new(username, page):
 
     if username not in users:
         raise NotFound("User '{}' not found.".format(username))
 
-    result = {}
-    result.query.paginate(page=1, per_page=1).items
     if request.method == 'GET':
+        result = {}
         try:
-            showtimes = requests.get("http://127.0.0.1:5002/showtimes")
+            showtimes = requests.get("http://127.0.0.1:5002/showtimes/{}".format(page))
         except requests.exceptions.ConnectionError:
             raise ServiceUnavailable("The Showtimes service is unavailable.")
 		
         showtimes = showtimes.json()
-        for date, movies in showtimes.items():
-            result[date] = []
-            for movieid in movies:
-                try:
-                    movies_resp = requests.get("http://127.0.0.1:5001/movies/{}".format(movieid))
-                except requests.exceptions.ConnectionError:
-                    raise ServiceUnavailable("The Movie service is unavailable.")
+       
+        for movieid in showtimes:
+            result[movieid] = []
+            try:
+                movies_resp = requests.get("http://127.0.0.1:5001/movies/{}".format(movieid))
+            except requests.exceptions.ConnectionError:
+                raise ServiceUnavailable("The Movie service is unavailable.")
+            try:
                 movies_resp = movies_resp.json()
-                result[date].append({
-					"title": movies_resp["title"],
-					"rating": movies_resp["rating"],
-					"uri": movies_resp["uri"]
-				})			
-		
+            except ValueError:
+                raise ServiceUnavailable("Sorry! No movies in this day.")
+            result[movieid].append({
+                "title": movies_resp["title"],
+                "rating": movies_resp["rating"]
+            })
+
     return nice_json(result)				
 
 @app.route("/users/<username>/suggested", methods=['GET'])
