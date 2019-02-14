@@ -11,7 +11,7 @@ file_handler.setLevel(WARNING)
 
 app.logger.addHandler(file_handler)
 
-with open("{}/database/bookings.json".format(root_dir()), "r") as f:
+with open("{}/database/bookings.json".format(root_dir()), "r+") as f:
     bookings = json.load(f)
 
 
@@ -21,7 +21,8 @@ def hello():
         "uri": "/",
         "subresource_uris": {
             "bookings": "/bookings",
-            "booking": "/bookings/<username>"
+            "booking": "/bookings/<username>",
+            "booking_add": "/bookings/<username>/add"
         }
     })
 
@@ -36,6 +37,11 @@ def booking_record(username):
         raise NotFound
 
     return nice_json(bookings[username])
+
+	
+@app.route("/bookings/<username>/add", methods=['POST'])
+def booking_add(username):
+    return 0
 
 if __name__ == "__main__":
     app.run(port=5003, debug = True)

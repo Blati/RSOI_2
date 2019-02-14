@@ -80,7 +80,7 @@ def user_bookings(username):
     return nice_json(result)
 
 @app.route("/users/<username>/bookings/add", defaults={'page': '08022019'}, methods=['GET', 'POST'])
-@app.route("/users/<username>/bookings/add/<page>")
+@app.route("/users/<username>/bookings/add/<page>", methods=['GET', 'POST'])
 def user_bookings_new(username, page):
 
     if username not in users:
@@ -109,8 +109,16 @@ def user_bookings_new(username, page):
                 "title": movies_resp["title"],
                 "rating": movies_resp["rating"]
             })
+			
+        return nice_json(result)
 
-    return nice_json(result)				
+    if request.method == 'POST':
+
+        data = request.get_json()
+		
+        return nice_json(data)
+
+    raise NotImplementedError()				
 
 @app.route("/users/<username>/suggested", methods=['GET'])
 def user_suggested(username):
