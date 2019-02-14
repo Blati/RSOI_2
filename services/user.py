@@ -81,7 +81,7 @@ def user_bookings(username):
 
 @app.route("/users/<username>/bookings/add", defaults={'page': '08022019'}, methods=['GET', 'POST'])
 @app.route("/users/<username>/bookings/add/<page>", methods=['GET', 'POST'])
-def user_bookings_new(username, page):
+def user_bookings_add(username, page):
 
     if username not in users:
         raise NotFound("User '{}' not found.".format(username))
@@ -113,8 +113,9 @@ def user_bookings_new(username, page):
         return nice_json(result)
 
     if request.method == 'POST':
-        result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username))
-        result = result.json() 
+        raw = request.get_json()
+        result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username), json=raw)
+        result = result.json()
 		
         return nice_json(result)
 
