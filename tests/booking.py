@@ -8,7 +8,7 @@ class TestBookingService(unittest.TestCase):
 
     def test_booking_records(self):
         """ Test /bookings/<username> for all known bookings"""
-        for date, expected in GOOD_RESPONSES.iteritems():
+        for date, expected in GOOD_RESPONSES.items():
             reply = requests.get("{}/{}".format(self.url, date))
             actual_reply = reply.json()
 
@@ -28,27 +28,32 @@ class TestBookingService(unittest.TestCase):
         self.assertEqual(actual_reply.status_code, 404,
                          "Got {} but expected 404".format(
                              actual_reply.status_code))
+							 
+    def test_hello(self):
+        actual_reply = requests.get("http://127.0.0.1:5003")
+        self.assertEqual(200,actual_reply.status_code)
+	
 
 GOOD_RESPONSES = {
   "egor_schukin": {
-    "09022017": [
+    "09022019": [
       "id4"
     ]
   },
   "yury_osipov": {
-    "09022017": [
+    "09022019": [
       "id4"
     ],
-    "10022017": [
+    "10022019": [
       "id6"
     ]
   },
   "larisa_burova": {
-    "09022017": [
+    "09022019": [
       "id5",
       "id4"
     ],
-    "13022017": [
+    "13022019": [
       "id2",
       "id6"
     ]

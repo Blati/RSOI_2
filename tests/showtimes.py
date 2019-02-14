@@ -7,7 +7,7 @@ class TestShowTimesService(unittest.TestCase):
 
     def test_showtimes_records(self):
         """ Test /showtimes/<date> for all known showtimes"""
-        for date, expected in GOOD_RESPONSES.iteritems():
+        for date, expected in GOOD_RESPONSES.items():
             reply = requests.get("{}/{}".format(self.url, date))
             actual_reply = reply.json()
 
@@ -24,7 +24,7 @@ class TestShowTimesService(unittest.TestCase):
 
     def test_not_found(self):
         """ Test /showtimes/<date> for non-existent dates"""
-        invalid_date = 20490101
+        invalid_date = 31122007
         actual_reply = requests.get("{}/{}".format(self.url, invalid_date))
         self.assertEqual(actual_reply.status_code, 404,
                          "Got {} but expected 404".format(
