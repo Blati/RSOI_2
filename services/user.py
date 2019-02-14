@@ -114,7 +114,7 @@ def user_bookings_add(username, page):
 
     if request.method == 'POST':
         raw = request.get_json()
-        result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username), json=raw)
+        result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username), json={username:raw})
         result = result.json()
 		
         return nice_json(result)

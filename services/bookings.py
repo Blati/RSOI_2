@@ -12,7 +12,7 @@ file_handler.setLevel(WARNING)
 
 app.logger.addHandler(file_handler)
 
-with open("{}/database/bookings.json".format(root_dir()), "r+") as f:
+with open("{}/database/bookings.json".format(root_dir()), "r") as f:
     bookings = json.load(f)
 
 
@@ -43,6 +43,14 @@ def booking_record(username):
 @app.route("/bookings/<username>/add", methods=['POST'])
 def booking_add(username):
     content = request.json
+
+    with open("{}/database/bookings.json".format(root_dir())) as ff:
+        data = json.load(ff)
+
+    data.update(content)
+    with open("{}/database/bookings.json".format(root_dir()), 'w+') as ff:
+	    json.dump(data,ff)
+    bookings.update(content)
     return nice_json(content)
 
 if __name__ == "__main__":
