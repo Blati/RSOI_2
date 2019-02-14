@@ -117,6 +117,21 @@ def user_bookings_add(username, page):
         result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username), json={username:raw})
         result = result.json()
 		
+        user_resp = requests.get("http://127.0.0.1:5000/users/{}".format(username))
+        user_resp = user_resp.json()
+        content = {
+            "id": user_resp["id"],
+            "name": user_resp["name"],
+            "last_active": 0
+        }
+        content = {username:content}
+        with open("{}/database/users.json".format(root_dir())) as ff:
+            data = json.load(ff)        
+		
+        data.update(content)
+        with open("{}/database/users.json".format(root_dir()), "w+") as ff:
+            json.dump(data,ff)
+        users.update(content)	
         return nice_json(result)
 
     raise NotImplementedError()				

@@ -51,6 +51,7 @@ def booking_add(username):
     with open("{}/database/bookings.json".format(root_dir()), 'w+') as ff:
 	    json.dump(data,ff)
     bookings.update(content)
+	
     return nice_json(content)
 
 if __name__ == "__main__":
