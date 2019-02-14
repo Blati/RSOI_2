@@ -113,10 +113,10 @@ def user_bookings_new(username, page):
         return nice_json(result)
 
     if request.method == 'POST':
-
-        data = request.get_json()
+        result = requests.post("http://127.0.0.1:5003/bookings/{}/add".format(username))
+        result = result.json() 
 		
-        return nice_json(data)
+        return nice_json(result)
 
     raise NotImplementedError()				
 

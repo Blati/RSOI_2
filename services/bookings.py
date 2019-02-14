@@ -41,7 +41,9 @@ def booking_record(username):
 	
 @app.route("/bookings/<username>/add", methods=['POST'])
 def booking_add(username):
-    return 0
+    data = request.get_json()
+	
+    return nice_json(data)
 
 if __name__ == "__main__":
     app.run(port=5003, debug = True)
