@@ -1,5 +1,6 @@
 from services import root_dir, nice_json
 from flask import Flask
+from flask import request
 from werkzeug.exceptions import NotFound, ServiceUnavailable
 import json
 import requests
@@ -23,6 +24,7 @@ def hello():
             "users": "/users",
             "user": "/users/<username>",
             "bookings": "/users/<username>/bookings",
+            "bookings": "/users/<username>/bookings/new",
             "suggested": "/users/<username>/suggested"
         }
     })
@@ -30,7 +32,7 @@ def hello():
 @app.route("/users", methods=['GET'])
 def users_list():
     return nice_json(users)
-
+	
 @app.route("/users/<username>", methods=['GET'])
 def user_record(username):
     if username not in users:
@@ -77,6 +79,36 @@ def user_bookings(username):
 
     return nice_json(result)
 
+@app.route("/users/<username>/bookings/new", methods=['GET', 'POST'])
+def user_bookings_new(username):
+
+    if username not in users:
+        raise NotFound("User '{}' not found.".format(username))
+
+    result = {}
+    result.query.paginate(page=1, per_page=1).items
+    if request.method == 'GET':
+        try:
+            showtimes = requests.get("http://127.0.0.1:5002/showtimes")
+        except requests.exceptions.ConnectionError:
+            raise ServiceUnavailable("The Showtimes service is unavailable.")
+		
+        showtimes = showtimes.json()
+        for date, movies in showtimes.items():
+            result[date] = []
+            for movieid in movies:
+                try:
+                    movies_resp = requests.get("http://127.0.0.1:5001/movies/{}".format(movieid))
+                except requests.exceptions.ConnectionError:
+                    raise ServiceUnavailable("The Movie service is unavailable.")
+                movies_resp = movies_resp.json()
+                result[date].append({
+					"title": movies_resp["title"],
+					"rating": movies_resp["rating"],
+					"uri": movies_resp["uri"]
+				})			
+		
+    return nice_json(result)				
 
 @app.route("/users/<username>/suggested", methods=['GET'])
 def user_suggested(username):
